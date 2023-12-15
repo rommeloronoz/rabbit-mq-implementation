@@ -1,0 +1,35 @@
+spring:
+  config:
+    activate:
+      on-profile: default
+  cloud:
+    stream:
+      bindings:
+        publishMessage-out-0:
+          content-type: application/json
+          destination: rabbit-mq-implementation.exchange
+          group: spring.to.rabbit
+        receiveMessage-in-0:
+          content-type: application/json
+          destination: rabbit-mq-implementation.exchange
+          group: rabbit.to.spring
+      rabbit:
+        bindings:
+          publishMessage-out-0:
+            producer:
+              bindQueue: true
+              bindingRoutingKey: spring.to.rabbit
+              routingKey: spring.to.rabbit
+              routing-key-expression: '"spring.to.rabbit"'
+          receiveMessage-in-0:
+            consumer:
+              bindQueue: true
+              declareExchange: true
+              queueNameGroupOnly: true
+              bindingRoutingKey: rabbit.to.spring
+              routingKey: rabbit.to.spring
+              routing-key-expression: '"rabbit.to.spring"'
+
+
+
+
