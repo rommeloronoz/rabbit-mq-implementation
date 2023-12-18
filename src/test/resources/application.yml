@@ -13,6 +13,8 @@ spring:
           content-type: application/json
           destination: rabbit-mq-implementation.exchange
           group: spring.to.spring
+        test-out:
+          destination: test-destination
       rabbit:
         bindings:
           publishMessage-out-0:

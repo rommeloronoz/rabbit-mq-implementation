@@ -17,5 +17,6 @@ public class OutputHandler {
     public void publishMessage(final RabbitMessage rabbitMessage) {
         System.out.println("Sending message : " + rabbitMessage.toString());
         streamBridge.send("publishMessage-out-0", rabbitMessage);
+        //streamBridge.send("test-out", rabbitMessage);
     }
 }
