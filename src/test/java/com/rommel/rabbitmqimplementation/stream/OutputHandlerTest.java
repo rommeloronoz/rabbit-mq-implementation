@@ -45,6 +45,36 @@ class OutputHandlerTest {
         }
     }
 
+    @Test
+    public void checkThatMultipleSendedMessagesAreBeingReceivedInTheOutputChannel() {
+        try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
+                TestChannelBinderConfiguration.getCompleteConfiguration(
+                        EmptyConfiguration.class))
+                .web(WebApplicationType.NONE)
+                .run("--spring.jmx.enabled=false")) {
+            StreamBridge streamBridge = context.getBean(StreamBridge.class);
+            OutputHandler outputHandler = new OutputHandler(streamBridge);
+            final RabbitMessage rabbitMessage1 = new RabbitMessage("MyExchange", "This is the FIRST test message");
+            final RabbitMessage rabbitMessage2 = new RabbitMessage("MyExchange", "This is the SECOND test message");
+            outputHandler.publishMessage(rabbitMessage1);
+            outputHandler.publishMessage(rabbitMessage2);
+            OutputDestination output = context.getBean(OutputDestination.class);
+
+            Message<byte[]> result = output.receive(0, "rabbit-mq-implementation.exchange");
+            assertThat(result).isNotNull();
+            assertThat(new String(result.getPayload()).contains(rabbitMessage1.getMessage()));
+            System.out.println("Sended: " + new String(result.getPayload()) + "   Expected: " + rabbitMessage1.toString());
+
+            Message<byte[]> result2 = output.receive(0, "rabbit-mq-implementation.exchange");
+            assertThat(result2).isNotNull();
+            assertThat(new String(result2.getPayload()).contains(rabbitMessage2.getMessage()));
+            System.out.println("Sended: " + new String(result2.getPayload()) + "   Expected: " + rabbitMessage2.toString());
+
+            Message<byte[]> result3 = output.receive(0, "rabbit-mq-implementation.exchange");
+            assertThat(result3).isNull();
+        }
+    }
+
     @EnableAutoConfiguration
     public static class EmptyConfiguration {
     }
