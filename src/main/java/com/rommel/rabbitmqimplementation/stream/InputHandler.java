@@ -19,7 +19,7 @@ public class InputHandler {
     }
 
     public void listen(final RabbitMessage payload, MessageHeaders headers) {
-        System.out.println("Received : " + payload.toString() + " |------| With Headers --> " + headers);
+        System.out.println("Received --> " + payload.toString() + " , with Headers --> " + headers);
         // Process request incoming....
     }
 }

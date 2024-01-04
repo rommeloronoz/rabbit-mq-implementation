@@ -4,21 +4,22 @@ spring:
       on-profile: default
   cloud:
     stream:
+      functions: receiveMessage-in-0
       bindings:
         publishMessage-out-0:
           content-type: application/json
-          destination: rabbit-mq-implementation.exchange
-          group: spring.to.spring
+          destination: testing.exchange
+          group: spring.to.dashboard
         receiveMessage-in-0:
           content-type: application/json
-          destination: rabbit-mq-implementation.exchange
-          group: spring.to.spring
+          destination: testing.exchange
+          group: dashboard.to.spring
       rabbit:
         bindings:
           publishMessage-out-0:
             producer:
               bindQueue: true
-              bindingRoutingKey: spring.to.spring
+              bindingRoutingKey: spring.to.dashboard
               routingKey: spring.to.spring
               routing-key-expression: '"spring.to.spring"'
           receiveMessage-in-0:
@@ -26,9 +27,6 @@ spring:
               bindQueue: true
               declareExchange: true
               queueNameGroupOnly: true
-              bindingRoutingKey: spring.to.spring
-              routingKey: spring.to.spring
-              routing-key-expression: '"spring.to.spring"'
 
 
 
